@@ -26,7 +26,6 @@ func Repositories(n, t, s string) (l []string, err error) {
 
 	opt := &github.RepositoryListByOrgOptions{
 		Type:        "public",
-		Sort:        "full_name",
 		ListOptions: github.ListOptions{PerPage: 10},
 	}
 
