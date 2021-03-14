@@ -10,7 +10,7 @@ import (
 // it exists.
 func TestClone(t *testing.T) {
 	repository := "i3/i3"
-	dir := "test/"
+	dir := "./"
 
 	err := Clone(repository, dir)
 	if err != nil {
