@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 
@@ -11,18 +10,15 @@ import (
 	"github.com/ministryofjustice/cloud-platform-terraform-upgrade/pkg/utils"
 )
 
-const (
-	temp = "tmp/"
-)
+const temp = "tmp/"
 
-var (
-	org, repo string
-)
+var org, repo, command string
 
 func init() {
 	// Initialise flags and parse.
 	flag.StringVar(&org, "o", "ministryofjustice", "Name of the GitHub organisation")
 	flag.StringVar(&repo, "r", "cloud-platform-terraform", "Pattern of the repository to match")
+	flag.StringVar(&command, "c", "ls -latr", "command to execute")
 
 	flag.Parse()
 }
@@ -54,16 +50,11 @@ func main() {
 	}
 
 	// loop over each repository
-	for _, v := range dirs {
-		path := "tmp/" + v
-		fmt.Println(path)
+	for _, dir := range dirs {
+		path := temp + dir
+		err := utils.Execute(path, command)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
-
-	// dirs, _ := os.ReadDir("tmp/")
-
-	// for _, d := range dirs {
-	// 	fmt.Printf("%T\n", d)
-	// 	fmt.Println(string(d))
-	// }
-
 }
