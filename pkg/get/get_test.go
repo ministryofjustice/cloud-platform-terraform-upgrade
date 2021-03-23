@@ -14,13 +14,13 @@ func TestRepositories(t *testing.T) {
 		t.Errorf("No token present, test failed.")
 	}
 
-	// Get the repositories for the i3 org and pattern match "i3".
-	// "i3" was just the simplist name I could find in an org that only had double figure repositories.
-	repos, err := Repositories("i3", token, "i3")
+	// Get the repositories for the i3 org and pattern match "Go".
+	// "Go" was just the simplist name I could find in an org that only had double figure repositories.
+	repos, err := Repositories("TheAlgorithms", token, "Go")
 	if err != nil {
 		t.Errorf("Failed to get repositories")
 	}
-	// There should only be one repositories in this org called "i3".
+	// There should only be one repositories in this org called "Go".
 	if len(repos) < 1 {
 		t.Errorf("Failed to get repositories")
 	}
