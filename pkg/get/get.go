@@ -13,11 +13,11 @@ import (
 // - the name of an organisation, i.e. "google"
 // - an oauth2 token, created by a GitHub user https://github.com/google/go-github#authentication
 // - and a pattern to match the repository name, i.e. "go"
-func Repositories(n, t, s string) (l []string, err error) {
+func Repositories(o, s, token string) (l []string, err error) {
 	// Create authenticated client to avoid API rate limiting.
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: t},
+		&oauth2.Token{AccessToken: token},
 	)
 
 	tc := oauth2.NewClient(ctx, ts)
@@ -33,7 +33,7 @@ func Repositories(n, t, s string) (l []string, err error) {
 	// Warning: this can take a while if the org contains a number of repositories.
 	var allRepos []*github.Repository
 	for {
-		repos, resp, err := client.Repositories.ListByOrg(ctx, n, opt)
+		repos, resp, err := client.Repositories.ListByOrg(ctx, o, opt)
 		if err != nil {
 			return nil, err
 		}
