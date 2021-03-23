@@ -16,7 +16,7 @@ func TestRepositories(t *testing.T) {
 
 	// Get the repositories for the i3 org and pattern match "Go".
 	// "Go" was just the simplist name I could find in an org that only had double figure repositories.
-	repos, err := Repositories("TheAlgorithms", token, "Go")
+	repos, err := Repositories("TheAlgorithms", "Go", token)
 	if err != nil {
 		t.Errorf("Failed to get repositories")
 	}
