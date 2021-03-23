@@ -9,7 +9,7 @@ import (
 // TestClone clones a local GitHub repository down and checks to see if
 // it exists.
 func TestClone(t *testing.T) {
-	repository := "i3/i3"
+	repository := "TheAlgorithms/Go"
 	dir := "./"
 
 	err := Clone(repository, dir)
