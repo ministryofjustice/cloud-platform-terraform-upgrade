@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -12,13 +13,17 @@ import (
 
 const temp = "tmp/"
 
-var org, repo, command string
+var (
+	org, repo, command string
+	commit             bool
+)
 
 func init() {
 	// Initialise flags and parse.
 	flag.StringVar(&org, "o", "ministryofjustice", "Name of the GitHub organisation")
 	flag.StringVar(&repo, "r", "cloud-platform-terraform", "Pattern of the repository to match")
 	flag.StringVar(&command, "c", "ls -latr", "command to execute")
+	flag.BoolVar(&commit, "commit", true, "whether you want to commit changes")
 
 	flag.Parse()
 }
@@ -29,7 +34,7 @@ func main() {
 		Token: os.Getenv("GITHUB_AUTH_TOKEN"),
 	}
 	if a.Token == "" {
-		log.Fatal("Unauthorised: No user or token present")
+		log.Fatalln("Unauthorised: No user or token present")
 	}
 
 	// Get list of repositories
@@ -55,6 +60,16 @@ func main() {
 		err := utils.Execute(path, command)
 		if err != nil {
 			log.Fatalln(err)
+		}
+
+		// if commit is set to true, then commit and pr
+		if commit {
+			err := git.Commit(path)
+			if err != nil {
+				log.Fatalln(err)
+			}
+		} else {
+			fmt.Println("commit isn't selected")
 		}
 	}
 }
