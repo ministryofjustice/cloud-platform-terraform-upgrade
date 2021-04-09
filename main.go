@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 
@@ -14,8 +13,8 @@ import (
 const temp = "tmp/"
 
 var (
-	org, repo, command string
-	commit             bool
+	org, repo, command, key string
+	commit                  bool
 )
 
 func init() {
@@ -23,6 +22,7 @@ func init() {
 	flag.StringVar(&org, "o", "ministryofjustice", "Name of the GitHub organisation")
 	flag.StringVar(&repo, "r", "cloud-platform-terraform", "Pattern of the repository to match")
 	flag.StringVar(&command, "c", "ls -latr", "command to execute")
+	// flag.StringVar(&key, "key", "~/.ssh/id_rsa", "specify location on your public key")
 	flag.BoolVar(&commit, "commit", true, "whether you want to commit changes")
 
 	flag.Parse()
@@ -31,7 +31,8 @@ func init() {
 func main() {
 	// Authenticate with an oauth2 token from GitHub.
 	a := utils.Config{
-		Token: os.Getenv("GITHUB_AUTH_TOKEN"),
+		Token:     os.Getenv("GITHUB_AUTH_TOKEN"),
+		PublicKey: key,
 	}
 	if a.Token == "" {
 		log.Fatalln("Unauthorised: No user or token present")
@@ -43,10 +44,10 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Clone repository locally
+	// Clone repository locally and store the file path in a slice.
 	var dirs []string
 	for _, repo := range repos {
-		err = git.Clone(repo, temp)
+		err = git.Clone(repo, temp, a.Token, a.User)
 		if err != nil {
 			log.Fatalln(err)
 		} else {
@@ -62,14 +63,17 @@ func main() {
 			log.Fatalln(err)
 		}
 
+		err = git.Add(path)
+		if err != nil {
+			log.Fatalf("Unable to add files to staging area: %s\n", err)
+		}
+
 		// if commit is set to true, then commit and pr
 		if commit {
-			err := git.Commit(path)
-			if err != nil {
-				log.Fatalln(err)
-			}
-		} else {
-			fmt.Println("commit isn't selected")
+			// git.PullRequest(a.Token, "command", org, repo)
+			// // github.PushCommit(a.Token, org, repo, path)
+			// if err != nil {
+			// 	log.Fatalf("Unable to create PR", err)
 		}
 	}
 }
