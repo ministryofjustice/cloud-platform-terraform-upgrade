@@ -1,4 +1,7 @@
-# Ministry of Justice Template Repository
+# Archived repository
+
+Please use: https://github.com/ministryofjustice/cloud-platform-git-xargs
+
 
 Use this template to [create a repository] with the default initial files for a Ministry of Justice Github repository, including:
 
